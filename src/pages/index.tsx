@@ -1,12 +1,16 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+const Home = () => {
    return (
       <main>
          <h1>Aws Otter Course</h1>
       </main>
    );
-}
+};
+
+export default withAuthenticator(Home);
+// export default Home
