@@ -1,0 +1,13 @@
+type Car @model @auth(rules: [{ allow: owner }]) {
+   id: ID!
+   name: String!
+   description: String!
+   carType: carEnum!
+}
+
+enum carEnum {
+   berline
+   break
+   suv
+   coupe
+}

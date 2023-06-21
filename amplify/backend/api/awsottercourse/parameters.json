@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "awsottercourse",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authawsottercourse0556f00d",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
