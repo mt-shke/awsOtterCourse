@@ -1,12 +1,23 @@
 import { createCar } from "@/graphql/mutations";
 import { API } from "aws-amplify";
+import { useState } from "react";
 
-const FormCreate: React.FC = () => {
+interface IFormCreate {
+   fetchCars: () => void;
+}
+
+const FormCreate: React.FC<IFormCreate> = ({ fetchCars }) => {
+   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
    const handleSubmit = async (e) => {
       e.preventDefault();
+      if (isSubmitting === true) {
+         return;
+      }
+      setIsSubmitting(true);
       try {
          const { target } = e;
-         await API.graphql({
+         const res = await API.graphql({
             query: createCar,
             variables: {
                input: {
@@ -16,8 +27,15 @@ const FormCreate: React.FC = () => {
                },
             },
          });
+
+         if (!res) {
+            throw new Error("Error submitting form");
+         }
+         fetchCars();
       } catch (error) {
          console.log("Error handling form: ", error);
+      } finally {
+         setIsSubmitting(false);
       }
    };
 
@@ -35,7 +53,13 @@ const FormCreate: React.FC = () => {
                <option value={"suv"}>suv</option>
                <option value={"coupe"}>coupe</option>
             </select>
-            <button type="submit">Submit</button>
+            <button
+               className={`${isSubmitting ? "bg-red-200" : ""} `}
+               disabled={isSubmitting}
+               type="submit"
+            >
+               Submit
+            </button>
          </form>
       </section>
    );

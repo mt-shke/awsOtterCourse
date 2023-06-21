@@ -17,7 +17,6 @@ const ButtonDelete: React.FC<IBtnProps> = ({ carId, fetchCars }) => {
                },
             },
          });
-
          fetchCars();
       } catch (error) {
          console.log("Error while deleting item: ", error);

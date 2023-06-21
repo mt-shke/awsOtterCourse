@@ -1,30 +1,13 @@
-import { carEnum } from "@/API";
-import { listCars } from "@/graphql/queries";
-import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { API } from "aws-amplify";
-import { useEffect, useState } from "react";
 import ButtonDelete from "./ButtonDelete";
+import { ICar } from ".";
+import ButtonUpdate from "./ButtonUpdate";
 
-const SectionRead: React.FC = () => {
-   const [cars, setCars] = useState<null | ICar[]>(null);
+interface ISectionRead {
+   cars: ICar[] | null;
+   fetchCars: () => void;
+}
 
-   useEffect(() => {
-      fetchCars();
-   }, []);
-
-   const fetchCars = async () => {
-      const res = await API.graphql({
-         query: listCars,
-      });
-      if (!isGraphQLResultForListCars(res)) {
-         throw new Error("Error fetching listCars");
-      }
-      if (!res.data) {
-         throw new Error("No data received while fetching listCars");
-      }
-      setCars(res.data.listCars.items);
-   };
-
+const SectionRead: React.FC<ISectionRead> = ({ cars, fetchCars }) => {
    return (
       <section>
          <ul className="flex flex-col gap-2 bg-green-100 p-4 rounded">
@@ -38,7 +21,10 @@ const SectionRead: React.FC = () => {
                      <span>
                         {car.name} - {car.carType} - {car.description}
                      </span>
-                     <ButtonDelete carId={car.id} fetchCars={fetchCars} />
+                     <div className="flex gap-2">
+                        <ButtonUpdate carId={car.id} fetchCars={fetchCars} />
+                        <ButtonDelete carId={car.id} fetchCars={fetchCars} />
+                     </div>
                   </li>
                ))}
          </ul>
@@ -46,20 +32,3 @@ const SectionRead: React.FC = () => {
    );
 };
 export default SectionRead;
-
-export interface ICar {
-   id: string;
-   name: string;
-   description: string;
-   carType: carEnum;
-}
-
-const isGraphQLResultForListCars = (
-   response: any
-): response is GraphQLResult<{
-   listCars: { items: ICar[] };
-}> => {
-   return (
-      response.data && response.data.listCars && response.data.listCars.items
-   );
-};
